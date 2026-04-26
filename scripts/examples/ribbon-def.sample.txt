@@ -1,0 +1,9 @@
+#tab_id=tabCustom
+#tab_label=Meine Tools
+#group_id=grpMain
+#group_label=Aktionen
+#insert_after_mso=TabHome
+
+id;label;size;icon;onAction
+btnExport;Export;large;FileSaveAs;ExportMakro
+btnSync;Synchronisieren;normal;RefreshAll;SyncMakro
