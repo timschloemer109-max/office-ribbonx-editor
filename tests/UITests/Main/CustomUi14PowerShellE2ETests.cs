@@ -205,6 +205,22 @@ public sealed class CustomUi14PowerShellE2ETests
         Assert.That(lockedWorkbookResult.AllOutput, Does.Contain("Excel"));
     }
 
+    [Test]
+    public void PowerShellToolRejectsUnsupportedWorkbookExtension()
+    {
+        var repositoryRoot = FindRepositoryRoot();
+        var workbookPath = Path.Combine(_testFolder, "Unsupported.xlsx");
+        var definitionPath = Path.Combine(_testFolder, "valid-def.txt");
+        var outputPath = Path.Combine(_testFolder, "Unsupported.output.xlsx");
+
+        File.WriteAllText(workbookPath, "not-an-office-package");
+        WriteUpdateDefinition(definitionPath);
+
+        var result = RunPowerShellTool(repositoryRoot, workbookPath, definitionPath, outputPath);
+        Assert.That(result.ExitCode, Is.Not.EqualTo(0));
+        Assert.That(result.AllOutput, Does.Contain(".xlsm- oder .xlam-Datei"));
+    }
+
     private static void CreateMacroEnabledWorkbook(string workbookPath)
     {
         using var session = ExcelSession.CreateVisible(visible: false);

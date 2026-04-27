@@ -1,7 +1,7 @@
 # CustomUI14 per PowerShell aktualisieren
 
 `scripts/Update-CustomUI14.ps1` aktualisiert den Office-2010-RibbonX-Part
-`/customUI/customUI14.xml` in einer `.xlsm`-Datei. Es wird nur Windows
+`/customUI/customUI14.xml` in einer `.xlsm`- oder `.xlam`-Datei. Es wird nur Windows
 PowerShell 5.1 benoetigt; Office RibbonX Editor und .NET-SDK sind fuer die
 Ausfuehrung nicht erforderlich.
 
@@ -14,7 +14,7 @@ Ausfuehrung nicht erforderlich.
 ```
 
 Standardmaessig wird neben der Eingabedatei eine neue Datei mit dem Suffix
-`.ribbon.xlsm` geschrieben. Das Original bleibt unveraendert.
+`.ribbon.<ext>` geschrieben (z. B. `.ribbon.xlsm` oder `.ribbon.xlam`). Das Original bleibt unveraendert.
 
 Falls die lokale Execution Policy direkte Skriptaufrufe blockiert, kann der
 Aufruf explizit ueber PowerShell gestartet werden:

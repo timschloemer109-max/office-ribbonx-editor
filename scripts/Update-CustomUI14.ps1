@@ -33,7 +33,7 @@ function Resolve-RequiredFile {
     return (Resolve-Path -LiteralPath $Path).ProviderPath
 }
 
-function Assert-XlsmPath {
+function Assert-SupportedOfficePath {
     param(
         [Parameter(Mandatory = $true)]
         [string] $Path,
@@ -42,8 +42,9 @@ function Assert-XlsmPath {
         [string] $Name
     )
 
-    if ([System.IO.Path]::GetExtension($Path) -ine '.xlsm') {
-        throw "$Name muss eine .xlsm-Datei sein: $Path"
+    $extension = [System.IO.Path]::GetExtension($Path)
+    if ($extension -ine '.xlsm' -and $extension -ine '.xlam') {
+        throw "$Name muss eine .xlsm- oder .xlam-Datei sein: $Path"
     }
 }
 
@@ -462,7 +463,7 @@ function Update-CustomUi14 {
 try {
     $resolvedWorkbookPath = Resolve-RequiredFile -Path $WorkbookPath -Name 'WorkbookPath'
     $resolvedDefinitionPath = Resolve-RequiredFile -Path $DefinitionPath -Name 'DefinitionPath'
-    Assert-XlsmPath -Path $resolvedWorkbookPath -Name 'WorkbookPath'
+    Assert-SupportedOfficePath -Path $resolvedWorkbookPath -Name 'WorkbookPath'
 
     if ($ForceInPlace -and -not [string]::IsNullOrWhiteSpace($OutputPath)) {
         throw "OutputPath darf nicht zusammen mit ForceInPlace verwendet werden."
@@ -480,7 +481,7 @@ try {
             $targetPath = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($OutputPath)
         }
 
-        Assert-XlsmPath -Path $targetPath -Name 'OutputPath'
+        Assert-SupportedOfficePath -Path $targetPath -Name 'OutputPath'
 
         if ([string]::Equals($resolvedWorkbookPath, $targetPath, [System.StringComparison]::OrdinalIgnoreCase)) {
             throw "OutputPath entspricht WorkbookPath. Verwende ForceInPlace, wenn die Originaldatei ueberschrieben werden soll."
