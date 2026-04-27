@@ -21,6 +21,8 @@ public class ContainerWrapper : IDisposable
     public IEnumerable<string>? FilesToBeOpened { get; set; }
 
     public string? FileToBeSaved { get; set; }
+    
+    public string? LastOpenFileDialogFilter { get; private set; }
 
     public Func<string, string, MessageBoxButton, MessageBoxImage, MessageBoxResult>? ShowMessageFunc { get; set; }
 
@@ -83,6 +85,8 @@ public class ContainerWrapper : IDisposable
             .Returns(true)
             .Callback<string, string, Action<string>, string, int>((title, filter, action, fileName, filterIndex) =>
             {
+                LastOpenFileDialogFilter = filter;
+
                 if (FileToBeOpened != null)
                 {
                     action?.Invoke(FileToBeOpened);

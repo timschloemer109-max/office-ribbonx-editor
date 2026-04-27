@@ -349,6 +349,7 @@ function Update-CustomUi14 {
     $createdGroups = 0
     $createdButtons = 0
     $updatedButtons = 0
+    $deletedButtons = 0
 
     try {
         $package = [System.IO.Packaging.Package]::Open($TargetPath, [System.IO.FileMode]::Open, [System.IO.FileAccess]::ReadWrite)
@@ -394,6 +395,34 @@ function Update-CustomUi14 {
         $group.SetAttribute('id', $Definition.GroupId)
         $group.SetAttribute('label', $Definition.GroupLabel)
 
+        $definitionButtonIds = @{}
+        foreach ($buttonDefinition in $Definition.Buttons) {
+            $definitionButtonIds[$buttonDefinition.Id] = $true
+        }
+
+        $buttonsToDelete = New-Object System.Collections.Generic.List[System.Xml.XmlNode]
+        foreach ($child in $group.ChildNodes) {
+            if ($child.NodeType -ne [System.Xml.XmlNodeType]::Element) {
+                continue
+            }
+
+            if ($child.LocalName -ne 'button' -or $child.NamespaceURI -ne $CustomUi14Namespace) {
+                continue
+            }
+
+            $existingButtonId = $child.GetAttribute('id')
+            if (-not [string]::IsNullOrWhiteSpace($existingButtonId) -and $definitionButtonIds.ContainsKey($existingButtonId)) {
+                continue
+            }
+
+            [void] $buttonsToDelete.Add($child)
+        }
+
+        foreach ($buttonToDelete in $buttonsToDelete) {
+            [void] $group.RemoveChild($buttonToDelete)
+            $deletedButtons++
+        }
+
         foreach ($buttonDefinition in $Definition.Buttons) {
             $button = Get-DirectElement -Parent $group -LocalName 'button' -AttributeName 'id' -AttributeValue $buttonDefinition.Id
             if ($null -eq $button) {
@@ -425,6 +454,7 @@ function Update-CustomUi14 {
         CreatedGroups = $createdGroups
         CreatedButtons = $createdButtons
         UpdatedButtons = $updatedButtons
+        DeletedButtons = $deletedButtons
         OutputPath = $TargetPath
     }
 }
@@ -472,6 +502,7 @@ try {
     Write-Host "CreatedGroups: $($result.CreatedGroups)"
     Write-Host "CreatedButtons: $($result.CreatedButtons)"
     Write-Host "UpdatedButtons: $($result.UpdatedButtons)"
+    Write-Host "DeletedButtons: $($result.DeletedButtons)"
     Write-Host "OutputPath: $($result.OutputPath)"
     exit 0
 } catch {

@@ -92,6 +92,9 @@ geaendert wird.
 - Ein vorhandenes `/customUI/customUI.xml` bleibt unangetastet.
 - Existiert der konfigurierte Tab, die Gruppe oder ein Button bereits, werden
   die Attribute aktualisiert.
+- Buttons in der konfigurierten Gruppe werden mit der Definitionsdatei
+  synchronisiert: IDs, die nicht mehr in `ribbon-def.txt` enthalten sind,
+  werden aus der Gruppe entfernt.
 - Makros werden nicht erzeugt. `onAction` referenziert nur vorhandene oder
   spaeter anzulegende VBA-Prozeduren.
 

@@ -205,7 +205,7 @@
     <value>All Files (*.*)|*.*</value>
   </data>
   <data name="Filter.AllOfficeDocuments" xml:space="preserve">
-    <value>All Office Documents|*.???x;*.???m</value>
+    <value>All Office Documents|*.docx;*.docm;*.dotx;*.dotm;*.xlsx;*.xlsm;*.xlam;*.xltx;*.xltm;*.pptx;*.pptm;*.ppsx;*.ppsm;*.potx;*.potm;*.ppam;*.vsdx;*.vsdm;*.vstx;*.vstm</value>
   </data>
   <data name="Filter.ExcelDocuments" xml:space="preserve">
     <value>Microsoft Excel Workbooks|*.xlsx;*.xlsm;*.xlam;*.xltx;*.xltm</value>
