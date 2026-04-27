@@ -35,6 +35,20 @@ public sealed class MainWindowViewModelTests
     }
 
     [Test]
+    public void OpenDocument_FilterShouldIncludeExcelAddinFiles()
+    {
+        // Arrange
+        using var wrapper = new MainWindowViewModelWrapper();
+
+        // Act
+        wrapper.ViewModel.OpenDocument();
+
+        // Assert
+        Assert.That(wrapper.LastOpenFileDialogFilter, Is.Not.Null);
+        Assert.That(wrapper.LastOpenFileDialogFilter, Does.Contain("*.xlam"));
+    }
+
+    [Test]
     public void SaveAs_CorrectPath_ShouldBeSaved()
     {
         // Arrange

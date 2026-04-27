@@ -33,7 +33,7 @@ function Resolve-RequiredFile {
     return (Resolve-Path -LiteralPath $Path).ProviderPath
 }
 
-function Assert-XlsmPath {
+function Assert-SupportedOfficePath {
     param(
         [Parameter(Mandatory = $true)]
         [string] $Path,
@@ -42,8 +42,9 @@ function Assert-XlsmPath {
         [string] $Name
     )
 
-    if ([System.IO.Path]::GetExtension($Path) -ine '.xlsm') {
-        throw "$Name muss eine .xlsm-Datei sein: $Path"
+    $extension = [System.IO.Path]::GetExtension($Path)
+    if ($extension -ine '.xlsm' -and $extension -ine '.xlam') {
+        throw "$Name muss eine .xlsm- oder .xlam-Datei sein: $Path"
     }
 }
 
@@ -349,6 +350,7 @@ function Update-CustomUi14 {
     $createdGroups = 0
     $createdButtons = 0
     $updatedButtons = 0
+    $deletedButtons = 0
 
     try {
         $package = [System.IO.Packaging.Package]::Open($TargetPath, [System.IO.FileMode]::Open, [System.IO.FileAccess]::ReadWrite)
@@ -394,6 +396,34 @@ function Update-CustomUi14 {
         $group.SetAttribute('id', $Definition.GroupId)
         $group.SetAttribute('label', $Definition.GroupLabel)
 
+        $definitionButtonIds = @{}
+        foreach ($buttonDefinition in $Definition.Buttons) {
+            $definitionButtonIds[$buttonDefinition.Id] = $true
+        }
+
+        $buttonsToDelete = New-Object System.Collections.Generic.List[System.Xml.XmlNode]
+        foreach ($child in $group.ChildNodes) {
+            if ($child.NodeType -ne [System.Xml.XmlNodeType]::Element) {
+                continue
+            }
+
+            if ($child.LocalName -ne 'button' -or $child.NamespaceURI -ne $CustomUi14Namespace) {
+                continue
+            }
+
+            $existingButtonId = $child.GetAttribute('id')
+            if (-not [string]::IsNullOrWhiteSpace($existingButtonId) -and $definitionButtonIds.ContainsKey($existingButtonId)) {
+                continue
+            }
+
+            [void] $buttonsToDelete.Add($child)
+        }
+
+        foreach ($buttonToDelete in $buttonsToDelete) {
+            [void] $group.RemoveChild($buttonToDelete)
+            $deletedButtons++
+        }
+
         foreach ($buttonDefinition in $Definition.Buttons) {
             $button = Get-DirectElement -Parent $group -LocalName 'button' -AttributeName 'id' -AttributeValue $buttonDefinition.Id
             if ($null -eq $button) {
@@ -425,6 +455,7 @@ function Update-CustomUi14 {
         CreatedGroups = $createdGroups
         CreatedButtons = $createdButtons
         UpdatedButtons = $updatedButtons
+        DeletedButtons = $deletedButtons
         OutputPath = $TargetPath
     }
 }
@@ -432,7 +463,7 @@ function Update-CustomUi14 {
 try {
     $resolvedWorkbookPath = Resolve-RequiredFile -Path $WorkbookPath -Name 'WorkbookPath'
     $resolvedDefinitionPath = Resolve-RequiredFile -Path $DefinitionPath -Name 'DefinitionPath'
-    Assert-XlsmPath -Path $resolvedWorkbookPath -Name 'WorkbookPath'
+    Assert-SupportedOfficePath -Path $resolvedWorkbookPath -Name 'WorkbookPath'
 
     if ($ForceInPlace -and -not [string]::IsNullOrWhiteSpace($OutputPath)) {
         throw "OutputPath darf nicht zusammen mit ForceInPlace verwendet werden."
@@ -450,7 +481,7 @@ try {
             $targetPath = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($OutputPath)
         }
 
-        Assert-XlsmPath -Path $targetPath -Name 'OutputPath'
+        Assert-SupportedOfficePath -Path $targetPath -Name 'OutputPath'
 
         if ([string]::Equals($resolvedWorkbookPath, $targetPath, [System.StringComparison]::OrdinalIgnoreCase)) {
             throw "OutputPath entspricht WorkbookPath. Verwende ForceInPlace, wenn die Originaldatei ueberschrieben werden soll."
@@ -472,6 +503,7 @@ try {
     Write-Host "CreatedGroups: $($result.CreatedGroups)"
     Write-Host "CreatedButtons: $($result.CreatedButtons)"
     Write-Host "UpdatedButtons: $($result.UpdatedButtons)"
+    Write-Host "DeletedButtons: $($result.DeletedButtons)"
     Write-Host "OutputPath: $($result.OutputPath)"
     exit 0
 } catch {

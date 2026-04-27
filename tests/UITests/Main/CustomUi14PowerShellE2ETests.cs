@@ -108,6 +108,7 @@ public sealed class CustomUi14PowerShellE2ETests
         Assert.That(secondUpdate.ExitCode, Is.EqualTo(0), secondUpdate.AllOutput);
         Assert.That(secondUpdate.AllOutput, Does.Contain("CreatedButtons: 0"));
         Assert.That(secondUpdate.AllOutput, Does.Contain("UpdatedButtons: 3"));
+        Assert.That(secondUpdate.AllOutput, Does.Contain("DeletedButtons: 0"));
 
         AssertExcelRibbonButtons(
             updatedWorkbookPath,
@@ -118,6 +119,33 @@ public sealed class CustomUi14PowerShellE2ETests
                 ["Export B"] = "ExportB",
                 ["Sync B"] = "SyncB",
                 ["Clean"] = "CleanB",
+            });
+
+        var prunedDefinitionPath = Path.Combine(_testFolder, "pruned-def.txt");
+        WritePrunedDefinition(prunedDefinitionPath);
+
+        var pruneUpdate = RunPowerShellTool(repositoryRoot, updatedWorkbookPath, prunedDefinitionPath, updatedWorkbookPath, forceInPlace: true);
+        Assert.That(pruneUpdate.ExitCode, Is.EqualTo(0), pruneUpdate.AllOutput);
+        Assert.That(pruneUpdate.AllOutput, Does.Contain("CreatedButtons: 0"));
+        Assert.That(pruneUpdate.AllOutput, Does.Contain("UpdatedButtons: 1"));
+        Assert.That(pruneUpdate.AllOutput, Does.Contain("DeletedButtons: 2"));
+
+        AssertCustomUi14Buttons(
+            updatedWorkbookPath,
+            expectedTabLabel: "RX E2E Pruned",
+            expectedGroupLabel: "Updated Actions",
+            expectedButtons: new[]
+            {
+                new ExpectedButton("btnExport", "Export C", "large", "FileSaveAs", "ExportB"),
+            });
+
+        AssertExcelRibbonButtons(
+            updatedWorkbookPath,
+            tabLabel: "RX E2E Pruned",
+            groupLabel: "Updated Actions",
+            expectedCallbacks: new Dictionary<string, string>
+            {
+                ["Export C"] = "ExportB",
             });
 
         PreserveWorkbookArtifact(repositoryRoot, updatedWorkbookPath);
@@ -175,6 +203,22 @@ public sealed class CustomUi14PowerShellE2ETests
         var lockedWorkbookResult = RunPowerShellTool(repositoryRoot, workbookPath, validDefinition, workbookPath, forceInPlace: true);
         Assert.That(lockedWorkbookResult.ExitCode, Is.Not.EqualTo(0));
         Assert.That(lockedWorkbookResult.AllOutput, Does.Contain("Excel"));
+    }
+
+    [Test]
+    public void PowerShellToolRejectsUnsupportedWorkbookExtension()
+    {
+        var repositoryRoot = FindRepositoryRoot();
+        var workbookPath = Path.Combine(_testFolder, "Unsupported.xlsx");
+        var definitionPath = Path.Combine(_testFolder, "valid-def.txt");
+        var outputPath = Path.Combine(_testFolder, "Unsupported.output.xlsx");
+
+        File.WriteAllText(workbookPath, "not-an-office-package");
+        WriteUpdateDefinition(definitionPath);
+
+        var result = RunPowerShellTool(repositoryRoot, workbookPath, definitionPath, outputPath);
+        Assert.That(result.ExitCode, Is.Not.EqualTo(0));
+        Assert.That(result.AllOutput, Does.Contain(".xlsm- oder .xlam-Datei"));
     }
 
     private static void CreateMacroEnabledWorkbook(string workbookPath)
@@ -272,6 +316,22 @@ public sealed class CustomUi14PowerShellE2ETests
             btnExport;Export B;large;FileSave;ExportB
             btnSync;Sync B;normal;Repeat;SyncB
             btnClean;Clean;normal;ClearFormatting;CleanB
+            """);
+    }
+
+    private static void WritePrunedDefinition(string definitionPath)
+    {
+        File.WriteAllText(
+            definitionPath,
+            """
+            #tab_id=tabRxE2E
+            #tab_label=RX E2E Pruned
+            #group_id=grpBaseline
+            #group_label=Updated Actions
+            #insert_after_mso=TabHome
+
+            id;label;size;icon;onAction
+            btnExport;Export C;large;FileSaveAs;ExportB
             """);
     }
 
