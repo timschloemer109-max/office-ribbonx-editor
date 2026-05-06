@@ -1,0 +1,15 @@
+<customUI xmlns="http://schemas.microsoft.com/office/2009/07/customui">
+  <ribbon>
+    <tabs>
+      <tab id="tabCustom" label="Meine Tools">
+        <group id="grpMain" label="Makros">
+          <button id="btnExample"
+                  label="Beispiel"
+                  imageMso="HappyFace"
+                  size="large"
+                  onAction="BeispielMakro" />
+        </group>
+      </tab>
+    </tabs>
+  </ribbon>
+</customUI>

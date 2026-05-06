@@ -1,0 +1,34 @@
+<customUI xmlns="http://schemas.microsoft.com/office/2009/07/customui">
+  <ribbon startFromScratch="false">
+    <tabs>
+      <tab id="tabCustom" label="CAD Tools">
+        <group id="grpZeichnungen" label="Zeichnungsverwaltung">
+          <button id="btnZeichnungenFinden" imageMso="FileOpen" size="large"
+                  label="Zeichnungen finden"
+		  screentip="my long description"
+                  onAction="ZeichnungenNachStrukturAusXLS"/>
+          <button id="btnZeichnungen_Stkl" imageMso="HighImportance" size="large"
+                  label="Zeichnungen Stkl pruefen"
+		  screentip="my long description"
+                  onAction="Stueckliste_Zeichnung_Gesamtpruefung"/>
+          <button id="btnStkl_Pruefen" imageMso="GroupOmsView" size="large"
+                  label="Stueckliste pruefen"
+		  screentip="my long description"
+                  onAction="ZeichnungenNachStrukturAusXLS_v2"/>		
+          <button id="btnAuftragslisteHauptprogramm" imageMso="CustomAutoTextGallery" size="large"
+                  label="Auftragsliste Hauptprogramm"
+		  screentip="my long description"
+                  onAction="Hauptprogramm_Auftragsliste_Ribbon"/>	
+          <button id="btnAufhebenBlattschutz" imageMso="AdpPrimaryKey" size="large"
+                  label="aufheben Blattschutz"
+		  screentip="my long description"
+                  onAction="Aufheben_Blattschutz_Ribbon"/>
+          <button id="btnSetzeBlattschutz" imageMso="Lock" size="large"
+                  label="setze Blattschutz"
+		  screentip="my long description"
+                  onAction="Setze_Blattschutz_Ribbon"/>		
+        </group>
+      </tab>
+    </tabs>
+  </ribbon>
+</customUI>

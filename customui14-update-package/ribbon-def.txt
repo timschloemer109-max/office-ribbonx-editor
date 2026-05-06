@@ -1,0 +1,12 @@
+﻿#tab_id=tabCustom
+#tab_label=CAD Tools
+#group_id=grpZeichnungen
+#group_label=Zeichnungsverwaltung
+
+id;label;size;icon;onAction
+btnZeichnungenFinden;Zeichnungen finden;large;FileOpen;ZeichnungenNachStrukturAusXLS
+btnZeichnungen_Stkl;Zeichnungen Stkl pruefen;large;HighImportance;Stueckliste_Zeichnung_Gesamtpruefung
+btnStkl_Pruefen;Stueckliste pruefen;large;GroupOmsView;ZeichnungenNachStrukturAusXLS_v2
+btnAuftragslisteHauptprogramm;Auftragsliste Hauptprogramm;large;CustomAutoTextGallery;Hauptprogramm_Auftragsliste_Ribbon
+btnAufhebenBlattschutz;aufheben Blattschutz;large;AdpPrimaryKey;Aufheben_Blattschutz_Ribbon
+btnSetzeBlattschutz;setze Blattschutz;large;Lock;Setze_Blattschutz_Ribbon
