@@ -65,7 +65,9 @@ function Remove-CustomUiRelationships {
     $toRemove = @()
 
     foreach ($relationship in $relationships) {
-        $target = ($relationship.Target ?? '').TrimStart('/').ToLowerInvariant()
+        $targetValue = ''
+        if ($null -ne $relationship.Target) { $targetValue = [string]$relationship.Target }
+        $target = $targetValue.TrimStart('/').ToLowerInvariant()
         $removeFor12 = $Mode -in @('12', 'all') -and $relationship.Type -eq $CustomUi12RelationshipType -and $target -eq 'customui/customui.xml'
         $removeFor14 = $Mode -in @('14', 'all') -and $relationship.Type -eq $CustomUi14RelationshipType -and $target -eq 'customui/customui14.xml'
         if ($removeFor12 -or $removeFor14) {
