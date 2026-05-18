@@ -6,7 +6,7 @@ using JetBrains.Annotations;
 namespace OfficeRibbonXEditor.CommandLine;
 
 [Command(Name = "OfficeRibbonXEditor", Description = "A command-line interface to edit the custom UI of Office files")]
-[Subcommand(typeof(ExtractCommand), typeof(InsertCommand))]
+[Subcommand(typeof(ExtractCommand), typeof(InsertCommand), typeof(RemoveCommand))]
 [UsedImplicitly]
 public class Program(IConsole console) : BaseCommand(console)
 {

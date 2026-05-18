@@ -19,8 +19,9 @@ Warum:
 
 - `Apply-CustomUI14Interactive.ps1`: interaktive Datei-Auswahl fuer Office-Datei und `customUI14.txt`.
 - `CustomUI14-App.cmd`: startet eine kleine Fenster-Anwendung fuer Auswahl und Ausfuehrung.
-- `CustomUI14-App.ps1`: Fenster-Anwendung mit Datei-Auswahl, Ausgabepfad und Log.
+- `CustomUI14-App.ps1`: Fenster-Anwendung mit Datei-Auswahl, Ausgabepfad und Log (einspielen oder loeschen).
 - `Set-CustomUI14Xml.ps1`: spielt eine komplette `customUI14.txt`/`.xml` in eine Office-Datei ein.
+- `Remove-CustomUIXml.ps1`: loescht `customUI.xml`/`customUI14.xml` (Typ `12`, `14` oder `all`) aus einer Office-Datei.
 - `customUI14-template.txt`: kleine XML-Vorlage fuer neue Ribbons.
 - `Apply-RibbonUpdate.ps1`: alter Wrapper fuer `ribbon-def.txt`.
 - `Update-CustomUI14.ps1`: altes Buttonlisten-Update-Skript.
@@ -44,9 +45,10 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Apply-CustomUI14Intera
 
 Danach:
 
-1. Office-Datei auswaehlen (`.xlsm`, `.xlam`, `.docm`, `.dotm`, `.pptm`, `.ppam`)
-2. `customUI14.txt` oder `customUI14.xml` auswaehlen
-3. Ausgabedatei auswaehlen
+1. Modus auswaehlen: `CustomUI einspielen` oder `CustomUI loeschen`
+2. Office-Datei auswaehlen (`.xlsm`, `.xlam`, `.xltm`, `.docm`, `.dotm`, `.pptm`, `.ppam`)
+3. Beim Einspielen: `customUI14.txt` oder `customUI14.xml` auswaehlen
+4. Ausgabedatei auswaehlen (oder direkt ueberschreiben)
 
 ## Standard: neue Datei per Parameter erzeugen
 
@@ -111,3 +113,16 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Test-InspectCustomUI14
 ## Hinweis zu alten Screentips
 
 Die alte `ribbon-def.txt`-Variante setzt nur `id`, `label`, `size`, `imageMso` und `onAction`. Fuer alles Weitere bitte `customUI14.txt` verwenden.
+
+## CustomUI komplett loeschen (CLI)
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Remove-CustomUIXml.ps1 `
+  -OfficePath "C:\Pfad\Datei.xltm" `
+  -Type all
+```
+
+Optional:
+- `-Type 12` nur Office-2007-CustomUI loeschen
+- `-Type 14` nur Office-2010+-CustomUI loeschen
+- `-ForceInPlace` fuer direktes Ueberschreiben
