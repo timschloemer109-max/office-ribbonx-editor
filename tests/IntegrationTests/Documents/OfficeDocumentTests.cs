@@ -46,6 +46,31 @@ public class OfficeDocumentTests
         Assert.That(part, Is.Not.Null, "Part was not inserted");
     }
 
+
+    [TestCase(".xltm", OfficeApplication.Excel)]
+    [TestCase(".dotm", OfficeApplication.Word)]
+    public void TemplateExtensionsShouldMapToExpectedOfficeApp(string extension, OfficeApplication expected)
+    {
+        var result = OfficeDocument.MapFileType(extension);
+
+        Assert.That(result, Is.EqualTo(expected));
+    }
+
+    [Test]
+    public void CustomUiPartsShouldBeRemoved()
+    {
+        using var doc = new OfficeDocument(_sourceFile);
+
+        doc.CreateCustomPart(XmlPart.RibbonX12);
+        doc.CreateCustomPart(XmlPart.RibbonX14);
+
+        doc.RemoveCustomPart(XmlPart.RibbonX12);
+        doc.RemoveCustomPart(XmlPart.RibbonX14);
+
+        Assert.That(doc.RetrieveCustomPart(XmlPart.RibbonX12), Is.Null);
+        Assert.That(doc.RetrieveCustomPart(XmlPart.RibbonX14), Is.Null);
+    }
+
     [Test]
     public void DocumentShouldBeSaved()
     {

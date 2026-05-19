@@ -16,7 +16,7 @@ $PackageRelationshipNamespace = 'http://schemas.openxmlformats.org/package/2006/
 
 function Assert-SupportedOfficePath {
     param([string] $Path, [string] $Name)
-    $supportedExtensions = @('.xlsm', '.xlam', '.docm', '.dotm', '.pptm', '.ppam')
+    $supportedExtensions = @('.xlsm', '.xlam', '.xltm', '.docm', '.dotm', '.pptm', '.ppam')
     $extension = [System.IO.Path]::GetExtension($Path)
     if ($supportedExtensions -notcontains $extension.ToLowerInvariant()) {
         throw "$Name muss eine unterstuetzte Office-Makrodatei sein: $Path"
@@ -35,7 +35,7 @@ function Select-OfficeFile {
     Add-Type -AssemblyName System.Windows.Forms
     $dialog = New-Object System.Windows.Forms.OpenFileDialog
     $dialog.Title = 'Office-Datei auswaehlen, die aktualisiert werden soll'
-    $dialog.Filter = 'Office Makrodateien (*.xlsm;*.xlam;*.docm;*.dotm;*.pptm;*.ppam)|*.xlsm;*.xlam;*.docm;*.dotm;*.pptm;*.ppam|Alle Dateien (*.*)|*.*'
+    $dialog.Filter = 'Office Makrodateien (*.xlsm;*.xlam;*.xltm;*.docm;*.dotm;*.pptm;*.ppam)|*.xlsm;*.xlam;*.xltm;*.docm;*.dotm;*.pptm;*.ppam|Alle Dateien (*.*)|*.*'
     $dialog.Multiselect = $false
     if ($dialog.ShowDialog() -ne [System.Windows.Forms.DialogResult]::OK) {
         throw 'Keine Office-Datei ausgewaehlt.'
@@ -60,7 +60,7 @@ function Select-OutputFile {
     Add-Type -AssemblyName System.Windows.Forms
     $dialog = New-Object System.Windows.Forms.SaveFileDialog
     $dialog.Title = 'Ausgabedatei speichern'
-    $dialog.Filter = 'Office Makrodateien (*.xlsm;*.xlam;*.docm;*.dotm;*.pptm;*.ppam)|*.xlsm;*.xlam;*.docm;*.dotm;*.pptm;*.ppam|Alle Dateien (*.*)|*.*'
+    $dialog.Filter = 'Office Makrodateien (*.xlsm;*.xlam;*.xltm;*.docm;*.dotm;*.pptm;*.ppam)|*.xlsm;*.xlam;*.xltm;*.docm;*.dotm;*.pptm;*.ppam|Alle Dateien (*.*)|*.*'
     $dialog.FileName = [System.IO.Path]::GetFileNameWithoutExtension($SourcePath) + '.customui' + [System.IO.Path]::GetExtension($SourcePath)
     $dialog.InitialDirectory = [System.IO.Path]::GetDirectoryName($SourcePath)
     if ($dialog.ShowDialog() -ne [System.Windows.Forms.DialogResult]::OK) {
