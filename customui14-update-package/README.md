@@ -48,7 +48,8 @@ Danach:
 1. Modus auswaehlen: `CustomUI einspielen` oder `CustomUI loeschen`
 2. Office-Datei auswaehlen (`.xlsm`, `.xlam`, `.xltm`, `.docm`, `.dotm`, `.pptm`, `.ppam`)
 3. Beim Einspielen: `customUI14.txt` oder `customUI14.xml` auswaehlen
-4. Ausgabedatei auswaehlen (oder direkt ueberschreiben)
+4. Speichermodus waehlen: `Originaldatei ueberschreiben` oder `neue Ausgabedatei`
+5. Falls neue Datei: Ausgabedatei auswaehlen
 
 Hinweis: Das Skript schreibt im Log den aktiven Modus (`In-Place` oder `Neue Ausgabedatei`) und verifiziert nach dem Schreiben, dass `customUI/customUI14.xml` im Zielpaket vorhanden ist.
 

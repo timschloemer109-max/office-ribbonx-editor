@@ -69,6 +69,22 @@ function Select-OutputFile {
     return $dialog.FileName
 }
 
+function Select-WriteMode {
+    Add-Type -AssemblyName System.Windows.Forms
+    $result = [System.Windows.Forms.MessageBox]::Show(
+        'Soll die Originaldatei direkt ueberschrieben werden?' + [Environment]::NewLine + [Environment]::NewLine + 'Ja = Originaldatei ueberschreiben' + [Environment]::NewLine + 'Nein = neue Ausgabedatei auswaehlen',
+        'Speichermodus waehlen',
+        [System.Windows.Forms.MessageBoxButtons]::YesNoCancel,
+        [System.Windows.Forms.MessageBoxIcon]::Question
+    )
+
+    if ($result -eq [System.Windows.Forms.DialogResult]::Cancel) {
+        throw 'Vorgang wurde abgebrochen.'
+    }
+
+    return $result -eq [System.Windows.Forms.DialogResult]::Yes
+}
+
 function Read-ZipText {
     param([System.IO.Compression.ZipArchive] $Zip, [string] $EntryName)
     $entry = $Zip.GetEntry($EntryName)
@@ -175,7 +191,12 @@ try {
         if ([string]::IsNullOrWhiteSpace($OfficePath)) { $OfficePath = Select-OfficeFile }
         if ([string]::IsNullOrWhiteSpace($CustomUiPath)) { $CustomUiPath = Select-CustomUiFile }
         if (-not $ForceInPlace -and [string]::IsNullOrWhiteSpace($OutputPath)) {
-            $OutputPath = Select-OutputFile -SourcePath $OfficePath
+            if (Select-WriteMode) {
+                $ForceInPlace = $true
+            }
+            else {
+                $OutputPath = Select-OutputFile -SourcePath $OfficePath
+            }
         }
     }
 
