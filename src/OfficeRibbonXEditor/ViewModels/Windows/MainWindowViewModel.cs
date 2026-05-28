@@ -888,6 +888,11 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
         {
             return;
         }
+
+        foreach (var tab in OpenTabs)
+        {
+            tab.ApplyChanges();
+        }
             
         // Note: We are assuming that no UI events happen between the SaveFileDialog was
         // shown and this is called. Otherwise, selection might have changed
