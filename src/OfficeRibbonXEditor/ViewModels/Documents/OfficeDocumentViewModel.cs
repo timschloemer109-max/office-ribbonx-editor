@@ -89,7 +89,7 @@ public class OfficeDocumentViewModel : TreeViewItemViewModel, IDisposable
                 continue;
             }
 
-            Document.SaveCustomPart(part.Part.PartType, part.OriginalContents, true);
+            Document.SaveCustomPart(part.Part.PartType, part.Contents ?? string.Empty, true);
                 
             // Re-map the Part. This ensures that the PackagePart stored internally in OfficePart points to
             // the right location, in case it is needed
