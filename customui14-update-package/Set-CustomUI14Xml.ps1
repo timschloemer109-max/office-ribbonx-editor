@@ -156,6 +156,20 @@ function Set-CustomUi14Xml {
     }
 }
 
+function Test-CustomUi14Written {
+    param([string] $TargetPath)
+    Add-Type -AssemblyName System.IO.Compression
+    Add-Type -AssemblyName System.IO.Compression.FileSystem
+    $zip = [System.IO.Compression.ZipFile]::OpenRead($TargetPath)
+    try {
+        $entry = $zip.GetEntry('customUI/customUI14.xml')
+        return $null -ne $entry
+    }
+    finally {
+        $zip.Dispose()
+    }
+}
+
 try {
     if ($Interactive) {
         if ([string]::IsNullOrWhiteSpace($OfficePath)) { $OfficePath = Select-OfficeFile }
@@ -178,6 +192,7 @@ try {
 
     if ($ForceInPlace) {
         $targetPath = $resolvedOfficePath
+        Write-Host 'Modus: In-Place (Originaldatei wird ueberschrieben).'
     }
     else {
         if ([string]::IsNullOrWhiteSpace($OutputPath)) {
@@ -198,11 +213,15 @@ try {
             throw "OutputPath-Verzeichnis wurde nicht gefunden: $targetDirectory"
         }
         Copy-Item -LiteralPath $resolvedOfficePath -Destination $targetPath -Force
+        Write-Host 'Modus: Neue Ausgabedatei (Originaldatei bleibt unveraendert).'
     }
 
     $xmlText = Get-Content -Raw -LiteralPath $resolvedCustomUiPath
     Assert-CustomUiXml -XmlText $xmlText
     Set-CustomUi14Xml -TargetPath $targetPath -XmlText $xmlText
+    if (-not (Test-CustomUi14Written -TargetPath $targetPath)) {
+        throw "Verifikation fehlgeschlagen: customUI/customUI14.xml wurde in '$targetPath' nicht gefunden."
+    }
 
     Write-Host 'CustomUI14 XML wurde eingespielt.'
     Write-Host "OfficePath: $resolvedOfficePath"

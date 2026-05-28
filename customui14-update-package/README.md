@@ -50,6 +50,8 @@ Danach:
 3. Beim Einspielen: `customUI14.txt` oder `customUI14.xml` auswaehlen
 4. Ausgabedatei auswaehlen (oder direkt ueberschreiben)
 
+Hinweis: Das Skript schreibt im Log den aktiven Modus (`In-Place` oder `Neue Ausgabedatei`) und verifiziert nach dem Schreiben, dass `customUI/customUI14.xml` im Zielpaket vorhanden ist.
+
 ## Standard: neue Datei per Parameter erzeugen
 
 ```powershell
