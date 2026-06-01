@@ -1,4 +1,4 @@
-# Office RibbonX Editor - DOF Fork
+# Office RibbonX Editor - Fork
 
 Dieses Repository ist unser Fork des Office RibbonX Editors. Grundlage ist das
 Originalprojekt von Fernando Andreu:
@@ -35,7 +35,7 @@ ergaenzt und bestehende Speicherablaeufe stabilisiert.
   Wahl zwischen In-Place-Ueberschreiben und neuer Ausgabedatei
 - Unterstuetzung fuer weitere Makrodateitypen, unter anderem `.xlam` und `.xltm`
 - vollstaendige `customUI14.txt`/`.xml`-Vorlage als bevorzugtes Format fuer
-  DOF-Projekte
+  neue Projekte
 - alte `ribbon-def.txt`-Tabellenvariante bleibt als einfache Legacy-Variante
   erhalten
 - Logging und Nachpruefung, ob `customUI/customUI14.xml` nach dem Schreiben
@@ -90,7 +90,7 @@ Details stehen in [customui14-update-package/README.md](customui14-update-packag
 
 ## Empfohlenes CustomUI-Format
 
-Fuer neue DOF-Projekte ist `customUI14.txt` bzw. `customUI14.xml` das bevorzugte
+Fuer neue Projekte ist `customUI14.txt` bzw. `customUI14.xml` das bevorzugte
 Format. Es enthaelt das echte RibbonX-XML und kann direkt in die Office-Datei
 eingespielt werden.
 
